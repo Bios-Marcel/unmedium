@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"time"
 
 	"github.com/PuerkitoBio/goquery"
 	chi "github.com/go-chi/chi/v5"
@@ -48,17 +47,7 @@ func getPost(postURL string) (*goquery.Selection, *goquery.Selection, error) {
 		}
 
 		dom := bow.Dom()
-		//Waiting for article to load, since it's dynamically loaded via JS.
-		//This has to happen before caching, since we might cache it without the article otherwise.
-		var article *goquery.Selection
-		for {
-			if article != nil {
-				break
-			}
-
-			time.Sleep(100 * time.Millisecond)
-			article = dom.Find("article")
-		}
+		article := dom.Find("article")
 
 		if os.IsNotExist(openError) {
 			log.Printf("Caching %s\n", postURL)
