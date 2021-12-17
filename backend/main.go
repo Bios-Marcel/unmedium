@@ -103,7 +103,8 @@ func post(w http.ResponseWriter, r *http.Request) {
 	//Sections will cause rendering issues. For example h1 and h2
 	//inside of a section will look the same in firefox. While this
 	//will flatten the post, it won't cause any issues for now.
-	article = article.Find("section").Children()
+	article.Find("section > *").Unwrap()
+	article.Find("section").Remove()
 
 	var html bytes.Buffer
 	html.WriteString("<html><head>")
