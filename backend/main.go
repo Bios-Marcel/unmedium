@@ -27,10 +27,7 @@ func post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	author := bow.Find("meta").FilterFunction(func(i int, s *goquery.Selection) bool {
-		attr, found := s.Attr("name")
-		return found && attr == "author"
-	})
+	authorTag := bow.Find("meta[name=author]").First()
 
 	//Waiting for article to load, since it's dynamically loaded via JS.
 	var article *goquery.Selection
@@ -45,7 +42,7 @@ func post(w http.ResponseWriter, r *http.Request) {
 
 	//Remove author and post meta data from view
 	//FIXME Find safer way to do this.
-	fmt.Println(article.Find("h1").First().Next().Remove())
+	article.Find("h1").First().Next().Remove()
 
 	//Since we aren't reusing the stylesheet, the classes are just bloat.
 	removeClutter(article)
@@ -57,12 +54,23 @@ func post(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 
-	//FIXME For some reason toHtml won't work.
-	var authorName bytes.Buffer
-	html.Render(&authorName, author.Get(0))
-
+	var html bytes.Buffer
+	html.WriteString("<html><head>")
+	if authorTag.Length() == 1 {
+		html.WriteString(renderNode(authorTag.Get(0)))
+	}
 	//Body is required for browser to not just render as text.
-	w.Write([]byte("<html><head>" + authorName.String() + "</head><body>" + toHtml(article) + "</body></html>"))
+	html.WriteString("</head><body>")
+	html.WriteString(toHtml(article))
+	html.WriteString("</body></html>")
+
+	w.Write(html.Bytes())
+}
+
+func renderNode(node *html.Node) string {
+	var authorName bytes.Buffer
+	html.Render(&authorName, node)
+	return authorName.String()
 }
 
 func toHtml(selection *goquery.Selection) string {
