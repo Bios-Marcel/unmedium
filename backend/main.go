@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 	chi "github.com/go-chi/chi/v5"
@@ -89,9 +90,23 @@ func post(w http.ResponseWriter, r *http.Request) {
 	//Since we aren't reusing the stylesheet, the classes are just bloat.
 	removeClutter(article)
 
+	//Fixing images not being displayed in a proper resolution.
+	//Since child selectors do not work, we do this stuff manually.
+	article.
+		Find("noscript").
+		Each(func(i int, s *goquery.Selection) {
+			//The tags inside a noscript node aren't parsed initially, we gotta parse them mamually.
+			stringReader := strings.NewReader(s.Get(0).FirstChild.Data)
+			noscriptContent, parseError := goquery.NewDocumentFromReader(stringReader)
+			if parseError == nil && noscriptContent.Length() == 1 {
+				s.
+					Parent().
+					ReplaceWithSelection(noscriptContent.Selection)
+			}
+		})
+
 	//Sections will cause rendering issues. For example h1 and h2
-	//inside of a section will look the same in firefox. While this
-	//will flatten the post, it won't cause any issues for now.
+	//inside of a section will look the same in firefox.
 	article.Find("section > *").Unwrap()
 	article.Find("section").Remove()
 
