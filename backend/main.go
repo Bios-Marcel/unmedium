@@ -122,6 +122,12 @@ func post(w http.ResponseWriter, r *http.Request) {
 	var html bytes.Buffer
 	html.WriteString("<html><head>")
 	html.WriteString("<meta charset=\"utf-8\">")
+	articleTitle := article.Find("h1").First().Text()
+	if articleTitle != "" {
+		html.WriteString("<title>")
+		html.WriteString(articleTitle)
+		html.WriteString("</title>")
+	}
 	html.WriteString("<link rel=\"stylesheet\" href=\"/resources/base.css\">")
 	html.WriteString("<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">")
 	if authorTag.Length() == 1 {
