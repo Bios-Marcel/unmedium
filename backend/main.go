@@ -99,11 +99,15 @@ func post(w http.ResponseWriter, r *http.Request) {
 			stringReader := strings.NewReader(s.Get(0).FirstChild.Data)
 			noscriptContent, parseError := goquery.NewDocumentFromReader(stringReader)
 			if parseError == nil && noscriptContent.Length() == 1 {
+				image := noscriptContent.Selection.Find("img")
 				s.
 					Parent().
-					ReplaceWithSelection(noscriptContent.Selection)
+					ReplaceWithSelection(image)
 			}
 		})
+
+	//Prevent image loading from blocking the page.
+	article.Find("img").SetAttr("loading", "lazy")
 
 	//Sections will cause rendering issues. For example h1 and h2
 	//inside of a section will look the same in firefox.
