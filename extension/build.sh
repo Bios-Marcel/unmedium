@@ -1,0 +1,1 @@
+zip -r -FS ../unmedium.zip manifest.json unmedium.js
