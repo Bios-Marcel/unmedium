@@ -1,0 +1,58 @@
+/* COLORS */
+:root{
+--bg: #f7f2e3;
+--fg: #302d2d;
+--bg-contrast: #e7e2e2;
+--anchor: #4183C4;
+}
+@media (prefers-color-scheme: dark){
+:root{
+--bg: #2c2c2c;
+--fg: #d5d5d5;
+--bg-contrast: #3b3a3a;
+}
+}
+html{
+/*Sans-Serif fonts */
+font-family: Frutiger, "Frutiger Linotype", Univers, Calibri, "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+body{
+background: var(--bg);
+color: var(--fg);
+margin: 1em auto auto auto;
+width: 50%;
+}
+a{
+color: var(--anchor);
+text-decoration: none;
+}
+.author{
+font-size: 0.8em;
+margin-top: 0;
+margin-bottom: 2rem;
+font-weight: bold;
+font-style: italic;
+}
+figure{
+margin: 0;
+}
+figcaption{
+filter: brightness(85%);
+}
+article{
+display: inline-block;
+width: 100%;
+}
+pre{
+background: var(--bg-contrast);
+overflow-x: auto;
+padding: 0.5em;
+}
+/* SMALL SCREEN ADJUSTMENTS */
+@media screen and (max-width: 720px){
+body{
+width: 95%;
+margin-left: 2.5%;
+margin-right: 2.5%;
+}
+}

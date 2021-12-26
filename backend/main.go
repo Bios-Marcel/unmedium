@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"embed"
 	"fmt"
 	"log"
 	"net/http"
@@ -18,6 +19,9 @@ import (
 
 var cacheDir string
 
+//go:embed resources/*
+var resources embed.FS
+
 func main() {
 	baseCacheDir, err := os.UserCacheDir()
 	if err != nil {
@@ -32,6 +36,7 @@ func main() {
 	log.Printf("Caching into %s\n", cacheDir)
 
 	r := chi.NewRouter()
+	r.Handle("/resources/*", http.FileServer(http.FS(resources)))
 	r.Get("/*", post)
 	http.ListenAndServe(":8080", r)
 }
@@ -116,11 +121,20 @@ func post(w http.ResponseWriter, r *http.Request) {
 
 	var html bytes.Buffer
 	html.WriteString("<html><head>")
+	html.WriteString("<meta charset=\"utf-8\">")
+	html.WriteString("<link rel=\"stylesheet\" href=\"/resources/base.css\">")
+	html.WriteString("<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">")
 	if authorTag.Length() == 1 {
 		html.WriteString(renderNode(authorTag.Get(0)))
 	}
 	//Body is required for browser to not just render as text.
 	html.WriteString("</head><body>")
+	authorName, authorNameExists := authorTag.Attr("content")
+	if authorNameExists && authorName != "" {
+		html.WriteString("<span class=\"author\">Authored by ")
+		html.WriteString(authorName)
+		html.WriteString("</span>")
+	}
 	html.WriteString(toHtml(article))
 	html.WriteString("</body></html>")
 
