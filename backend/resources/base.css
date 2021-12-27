@@ -39,6 +39,10 @@ margin: 0;
 figcaption{
 filter: brightness(85%);
 }
+img {
+    max-width: 100%;
+    height: auto;
+}
 article{
 display: inline-block;
 width: 100%;
