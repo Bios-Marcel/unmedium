@@ -1,6 +1,6 @@
 function saveOptions(e) {
     e.preventDefault();
-    browser.storage.sync.set({
+    browser.storage.local.set({
         backend: document.querySelector("#backend").value
     });
 }
@@ -14,8 +14,7 @@ function restoreOptions() {
         console.log(`Error: ${error}`);
     }
 
-    let getting = browser.storage.sync.get("backend");
-    getting.then(setCurrentChoice, onError);
+    chrome.storage.local.get("backend", setCurrentChoice);
 }
 
 document.addEventListener("DOMContentLoaded", restoreOptions);
