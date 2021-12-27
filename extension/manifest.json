@@ -13,5 +13,16 @@
                 "unmedium.js"
             ]
         }
-    ]
+    ],
+    "options_ui": {
+        "page": "options.html"
+    },
+    "permissions": [
+        "storage"
+    ],
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "{079a2d89-6a27-471c-a2c4-acb0ed6f21ee}"
+        }
+    }
 }

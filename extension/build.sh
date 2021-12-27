@@ -1,1 +1,1 @@
-zip -r -FS ../unmedium.zip manifest.json unmedium.js
+zip -r -FS ../unmedium.zip manifest.json unmedium.js options.js options.html
